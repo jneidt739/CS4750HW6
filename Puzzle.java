@@ -11,7 +11,7 @@ public class Puzzle {
         this.board = board;
     }
 
-    public void solve(){
+    public boolean solve(){
         PriorityQueue<Square> queue = new PriorityQueue<Square>();
         for(byte i = 0; i < 9; i++){
             for(byte j = 0; j < 9; j++){
@@ -22,12 +22,71 @@ public class Puzzle {
                 }
             }
         }
+        return backtrackSolve(queue);
     }
 
+    private boolean backtrackSolve(PriorityQueue<Square> queue) {
+        if (queue.isEmpty()) {
+            // Puzzle solved if queue is empty
+            System.out.println(this); // Print solved puzzle
+            return true;
+        }
+    
+        Square sq = queue.poll(); // Get cell with minimum remaining values
+        for (Byte num : sq.mrv) {
+            if (isValidPlacement(sq.row, sq.col, num)) {
+                board[sq.row][sq.col] = num;
+                PriorityQueue<Square> newQueue = new PriorityQueue<>(queue);
+    
+                // Update properties for affected cells
+                for (Square s : newQueue) {
+                    setProps(s);
+                }
+    
+                if (backtrackSolve(newQueue)) {
+                    return true; // Puzzle solved
+                }
+    
+                board[sq.row][sq.col] = 0; // Reset on backtrack
+            }
+        }
+        return false; // Trigger backtracking if no valid placement
+    }
+
+    private boolean isValidPlacement(int row, int col, byte num) {
+        // Check row
+        for (int i = 0; i < 9; i++) {
+            if (board[row][i] == num) {
+                return false;
+            }
+        }
+    
+        // Check column
+        for (int i = 0; i < 9; i++) {
+            if (board[i][col] == num) {
+                return false;
+            }
+        }
+    
+        // Check 3x3 subgrid
+        int subgridRowStart = (row / 3) * 3;
+        int subgridColStart = (col / 3) * 3;
+        for (int r = subgridRowStart; r < subgridRowStart + 3; r++) {
+            for (int c = subgridColStart; c < subgridColStart + 3; c++) {
+                if (board[r][c] == num) {
+                    return false;
+                }
+            }
+        }
+    
+        return true;
+    }
+    
     private void setProps(Square square){
         HashSet<Byte> remaining = new HashSet<Byte>(nums);
         ArrayList<Point> nearby = square.getGrid();
         int degree = 0;
+
         for(Point point : nearby){
             byte value = board[(int)point.getX()][(int)point.getY()];
             if(value == 0){
