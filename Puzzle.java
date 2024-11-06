@@ -26,7 +26,7 @@ public class Puzzle {
 
     private void setProps(Square square){
         HashSet<Byte> remaining = new HashSet<Byte>(nums);
-        ArrayList<Point> nearby = square.getGrid();
+        ArrayList<Point> nearby = square.getConstraints();
         int degree = 0;
         for(Point point : nearby){
             byte value = board[(int)point.getX()][(int)point.getY()];
