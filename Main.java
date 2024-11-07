@@ -51,8 +51,8 @@ public class Main{
         };
         Puzzle puzzle3 = new Puzzle(board3);
 
-        puzzle1.solve();
-        puzzle2.solve();
-        puzzle3.solve();
+        System.out.println(puzzle1.solve().substring(0,155));
+        System.out.println(puzzle2.solve().substring(0,155));
+        System.out.println(puzzle3.solve().substring(0,155));
     }
 }

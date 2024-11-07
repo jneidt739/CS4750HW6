@@ -21,31 +21,32 @@ public class Puzzle {
         return newBoard;
     }
 
-    public void solve(){
-        RecursiveBacktrack();
+    public String solve(){
+        return RecursiveBacktrack();
     }
 
-    public boolean RecursiveBacktrack(){
+    public String RecursiveBacktrack(){
         PriorityQueue<Square> queue = buildCSP();
         if(queue == null){
-            return false;
+            return "FAIL";
         }
         if(queue.isEmpty()){
             System.out.println(this);
-            return true;
+            return "";
         }
         Square front = queue.poll();
         for(Byte num : front.mrv){
             byte[][] newBoard = copyBoard(board);
             newBoard[front.row][front.col] = num;
             Puzzle newPuzzle = new Puzzle(newBoard);
-            if(newPuzzle.RecursiveBacktrack())
-                return true;
-            else{
+            String result = newPuzzle.RecursiveBacktrack();
+            if(result == "FAIL")
                 continue;
+            else{
+                return String.format("(%d, %d), Value:%d, Domain: %d, Degree: %d\n", front.row + 1, front.col + 1, num, front.mrv.size(), front.degree) + result;
             }
         }
-        return false;
+        return "FAIL";
     }
 
     public PriorityQueue<Square> buildCSP(){
