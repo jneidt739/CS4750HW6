@@ -3,6 +3,7 @@ import java.util.HashSet;
 public class Main{
 
     public static void main(String args[]){
+        //initializes static set of domain options
         HashSet<Byte> options = new HashSet<>();
         options.add((byte)1);
         options.add((byte)2);
@@ -14,6 +15,7 @@ public class Main{
         options.add((byte)8);
         options.add((byte)9);
         Puzzle.nums = options;
+        //initializes each sudoku board and Puzzle class
         byte[][] board1 = {
             {0,0,1,0,0,2,0,0,0},
             {0,0,5,0,0,6,0,3,0},
@@ -50,9 +52,16 @@ public class Main{
             {1,0,6,0,5,0,0,7,0},
         };
         Puzzle puzzle3 = new Puzzle(board3);
-
+        
+        //prints solutions with first four moves and execution times
+        long time = System.nanoTime();
         System.out.println(puzzle1.solve().substring(0,155));
+        System.out.println((System.nanoTime() - time)/1000000 + "ms");
+        time = System.nanoTime();
         System.out.println(puzzle2.solve().substring(0,155));
+        System.out.println((System.nanoTime() - time)/1000000 + "ms");
+        time = System.nanoTime();
         System.out.println(puzzle3.solve().substring(0,155));
+        System.out.println((System.nanoTime() - time)/1000000 + "ms");
     }
 }

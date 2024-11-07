@@ -8,10 +8,13 @@ public class Square implements Comparable<Square> {
     HashSet<Byte> mrv;
     int degree;
 
+    //constructor
     public Square(byte row, byte col){
         this.row = row;
         this.col = col;
     }
+
+    /* Setters */
 
     public void setMRV(HashSet<Byte> mrv){
         this.mrv = mrv;
@@ -21,6 +24,7 @@ public class Square implements Comparable<Square> {
         this.degree = degree;
     }
 
+    //returns list of all points in the same row, column, or subgrid as square
     public ArrayList<Point> getConstraints(){
         ArrayList<Point> pts = new ArrayList<>();
         pts.addAll(getRow(row, col));
@@ -29,6 +33,7 @@ public class Square implements Comparable<Square> {
         return pts;
     }
 
+    //returns all points in same row as square, excluding the square itself
     public ArrayList<Point> getRow(byte row, byte col){
         ArrayList<Point> pts = new ArrayList<>();
         for(byte i = 0; i < 9; i++){
@@ -40,6 +45,7 @@ public class Square implements Comparable<Square> {
         return pts;
     }
 
+    //returns all points in same column as square, excluding the square itself
     public ArrayList<Point> getCol(byte row, byte col){
         ArrayList<Point> pts = new ArrayList<>();
         for(byte i = 0; i < 9; i++){
@@ -51,13 +57,14 @@ public class Square implements Comparable<Square> {
         return pts;
     }
 
+    //gets all of the points in the same subgrid as the square that are not in the same row or column
     public ArrayList<Point> getSubGrid(byte row, byte col){
         ArrayList<Point> pts = new ArrayList<>();
         HashSet<Byte> rows = getSubGridRows(row);
         rows.remove(row);
         HashSet<Byte> cols = getSubGridRows(col);
         rows.remove(col);
-        for(Byte rowNum : rows){
+        for(Byte rowNum : rows){//loops through the four nodes in the subgrid that don't share a row/column
             for(Byte colNum : cols){
                 pts.add(new Point(rowNum, colNum));
             }
@@ -66,6 +73,7 @@ public class Square implements Comparable<Square> {
         return pts;
     }
 
+    //helper that returns set of row numbers in square's subgrid
     public HashSet<Byte> getSubGridRows(byte row){
         HashSet<Byte> rows = new HashSet<>();
         if(row < 3){
@@ -84,6 +92,7 @@ public class Square implements Comparable<Square> {
         return rows;
     }
 
+    //helper that returns set of column numbers in square's subgrid
     public HashSet<Byte> getSubGridCols(byte col){
         HashSet<Byte> cols = new HashSet<>();
         if(col < 3){
@@ -102,15 +111,17 @@ public class Square implements Comparable<Square> {
         return cols;
     }
 
+    //used for comparison of Square objects in PriorityQueue
     @Override
     public int compareTo(Square sq1){
+        //compares number of minimum remaining values
         if(this.mrv.size() != sq1.mrv.size()){
             return this.mrv.size() - sq1.mrv.size();
-        }else if(this.degree != sq1.degree){
+        }else if(this.degree != sq1.degree){//compares degree of each square
             return 0-(this.degree - sq1.degree);
-        }else if(this.col != sq1.col){
+        }else if(this.col != sq1.col){//ties are broken with column
             return this.col - sq1.col;
-        }else{
+        }else{//then row number
             return this.row - sq1.row;
         }
     }
