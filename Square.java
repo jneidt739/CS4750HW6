@@ -107,7 +107,7 @@ public class Square implements Comparable<Square> {
         if(this.mrv.size() != sq1.mrv.size()){
             return this.mrv.size() - sq1.mrv.size();
         }else if(this.degree != sq1.degree){
-            return this.degree - sq1.degree;
+            return 0-(this.degree - sq1.degree);
         }else if(this.col != sq1.col){
             return this.col - sq1.col;
         }else{

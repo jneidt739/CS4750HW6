@@ -11,20 +11,62 @@ public class Puzzle {
         this.board = board;
     }
 
+    public byte[][] copyBoard(byte[][] oldBoard){
+        byte[][] newBoard = new byte[9][9];
+        for(int i = 0; i < 9; i++){
+            for(int j = 0; j < 9; j++){
+                newBoard[i][j] = oldBoard[i][j];
+            }
+        }
+        return newBoard;
+    }
+
     public void solve(){
+        RecursiveBacktrack();
+    }
+
+    public boolean RecursiveBacktrack(){
+        PriorityQueue<Square> queue = buildCSP();
+        if(queue == null){
+            return false;
+        }
+        if(queue.isEmpty()){
+            System.out.println(this);
+            return true;
+        }
+        Square front = queue.poll();
+        for(Byte num : front.mrv){
+            byte[][] newBoard = copyBoard(board);
+            newBoard[front.row][front.col] = num;
+            Puzzle newPuzzle = new Puzzle(newBoard);
+            if(newPuzzle.RecursiveBacktrack())
+                return true;
+            else{
+                continue;
+            }
+        }
+        return false;
+    }
+
+    public PriorityQueue<Square> buildCSP(){
         PriorityQueue<Square> queue = new PriorityQueue<Square>();
         for(byte i = 0; i < 9; i++){
             for(byte j = 0; j < 9; j++){
                 if(board[i][j] == 0){
                     Square sq = new Square(i, j);
-                    setProps(sq);
+                    try{
+                        setProps(sq);
+                    }catch(Exception e){
+                        return null;
+                    }
                     queue.offer(sq);
                 }
             }
         }
+        return queue;
     }
 
-    private void setProps(Square square){
+    private void setProps(Square square) throws Exception{
         HashSet<Byte> remaining = new HashSet<Byte>(nums);
         ArrayList<Point> nearby = square.getConstraints();
         int degree = 0;
@@ -35,6 +77,9 @@ public class Puzzle {
             }else{
                 remaining.remove(value);
             }
+        }
+        if(remaining.isEmpty()){
+            throw new Exception();
         }
         square.setMRV(remaining);
         square.setDegree(degree);
